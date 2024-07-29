@@ -1409,11 +1409,8 @@ public class BukkitClasses {
 
 		if (Skript.classExists("org.bukkit.entity.Cat$Type")) {
 			ClassInfo<Cat.Type> catTypeClassInfo;
-			if (BukkitUtils.registryExists("CAT_VARIANT")) {
-				catTypeClassInfo = new RegistryClassInfo<>(Cat.Type.class, Registry.CAT_VARIANT, "cattype", "cat types");
-			} else {
-				catTypeClassInfo = new EnumClassInfo<>(Cat.Type.class, "cattype", "cat types");
-			}
+			catTypeClassInfo = new RegistryClassInfo<>(Cat.Type.class, Registry.CAT_VARIANT, "cattype", "cat types");
+
 			Classes.registerClass(catTypeClassInfo
 					.user("cat ?(type|race)s?")
 					.name("Cat Type")

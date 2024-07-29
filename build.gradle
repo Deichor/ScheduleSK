@@ -63,7 +63,6 @@ task testJar(type: ShadowJar) {
 
 task jar(overwrite: true, type: ShadowJar) {
 	dependsOn checkAliases
-	relocate 'com.github.Anon8281.universalScheduler', 'org.skriptlang.skript.lang.universalScheduler'
 	archiveFileName = jarName ? 'Skript-' + project.version + '.jar' : jarName
 	from sourceSets.main.output
 }
@@ -96,6 +95,7 @@ tasks.withType(ShadowJar) {
 	}
 	relocate 'io.papermc.lib', 'ch.njol.skript.paperlib'
 	relocate 'org.bstats', 'ch.njol.skript.bstats'
+	relocate 'com.github.Anon8281.universalScheduler', 'ch.njol.skript.universalScheduler'
 	manifest {
 		attributes(
 			'Name': 'ch/njol/skript',
