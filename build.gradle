@@ -29,6 +29,7 @@ dependencies {
 	shadow group: 'io.papermc', name: 'paperlib', version: '1.0.8'
 	shadow group: 'org.bstats', name: 'bstats-bukkit', version: '3.0.2'
 	shadow group: 'net.kyori', name: 'adventure-text-serializer-bungeecord', version: '4.3.2'
+	shadow group: 'com.github.Anon8281', name: 'UniversalScheduler', version: '0.1.6'
 
 	implementation group: 'io.papermc.paper', name: 'paper-api', version: '1.21-R0.1-SNAPSHOT'
 	implementation group: 'org.eclipse.jdt', name: 'org.eclipse.jdt.annotation', version: '2.2.700'
@@ -37,7 +38,7 @@ dependencies {
 	implementation group: 'net.milkbowl.vault', name: 'Vault', version: '1.7.3', {
 		exclude group: 'org.bstats', module: 'bstats-bukkit'
 	}
-	implementation 'com.github.Anon8281:UniversalScheduler:0.1.6'
+
 
 	implementation fileTree(dir: 'lib', include: '*.jar')
 
@@ -92,10 +93,10 @@ tasks.withType(ShadowJar) {
 		include(dependency('org.bstats:bstats-bukkit'))
 		include(dependency('org.bstats:bstats-base'))
 		include(dependency('net.kyori:adventure-text-serializer-bungeecord'))
+		include(dependency('com.github.Anon8281:UniversalScheduler'))
 	}
 	relocate 'io.papermc.lib', 'ch.njol.skript.paperlib'
 	relocate 'org.bstats', 'ch.njol.skript.bstats'
-	relocate 'com.github.Anon8281.universalScheduler', 'ch.njol.skript.universalScheduler'
 	manifest {
 		attributes(
 			'Name': 'ch/njol/skript',
