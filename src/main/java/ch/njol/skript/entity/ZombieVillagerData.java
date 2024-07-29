@@ -18,6 +18,7 @@
  */
 package ch.njol.skript.entity;
 
+import org.bukkit.Registry;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.Villager.Profession;
 import org.bukkit.entity.ZombieVillager;
@@ -31,7 +32,7 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 public class ZombieVillagerData extends EntityData<ZombieVillager> {
 
 	private final static boolean PROFESSION_UPDATE = Skript.isRunningMinecraft(1, 14);
-	private final static Villager.Profession[] professions = Villager.Profession.values();
+	private final static Villager.Profession[] professions = Registry.VILLAGER_PROFESSION.stream().toList().toArray(new Villager.Profession[0]);
 
 	static {
 		if (PROFESSION_UPDATE)
