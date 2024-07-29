@@ -26,6 +26,8 @@ import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.util.Timespan;
+import com.github.Anon8281.universalScheduler.UniversalScheduler;
+import com.github.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.event.Event;
@@ -57,7 +59,7 @@ public class EvtPeriodical extends SkriptEvent {
 	private Timespan period;
 
 	@SuppressWarnings("NotNullFieldNotInitialized")
-	private int[] taskIDs;
+	private MyScheduledTask[] tasks;
 
 	private World @Nullable [] worlds;
 
@@ -75,18 +77,14 @@ public class EvtPeriodical extends SkriptEvent {
 		long ticks = period.getTicks();
 
 		if (worlds == null) {
-			taskIDs = new int[]{
-				Bukkit.getScheduler().scheduleSyncRepeatingTask(
-					Skript.getInstance(), () -> execute(null), ticks, ticks
-				)
+			tasks = new MyScheduledTask[]{
+				UniversalScheduler.getScheduler(Skript.getInstance()).runTaskTimer(() -> execute(null), ticks, ticks)
 			};
 		} else {
-			taskIDs = new int[worlds.length];
+			tasks = new MyScheduledTask[worlds.length];
 			for (int i = 0; i < worlds.length; i++) {
 				World world = worlds[i];
-				taskIDs[i] = Bukkit.getScheduler().scheduleSyncRepeatingTask(
-					Skript.getInstance(), () -> execute(world), ticks - (world.getFullTime() % ticks), ticks
-				);
+				tasks[i] = UniversalScheduler.getScheduler(Skript.getInstance()).runTaskTimer(() -> execute(world), ticks - (world.getFullTime() % ticks), ticks);
 			}
 		}
 
@@ -95,8 +93,8 @@ public class EvtPeriodical extends SkriptEvent {
 
 	@Override
 	public void unload() {
-		for (int taskID : taskIDs)
-			Bukkit.getScheduler().cancelTask(taskID);
+		for (MyScheduledTask task : tasks)
+			task.cancel();
 	}
 
 	@Override

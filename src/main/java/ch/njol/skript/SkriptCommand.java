@@ -35,6 +35,7 @@ import ch.njol.skript.util.FileUtils;
 import ch.njol.skript.util.SkriptColor;
 import ch.njol.util.OpenCloseable;
 import ch.njol.util.StringUtils;
+import com.github.Anon8281.universalScheduler.UniversalScheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -433,7 +434,7 @@ public class SkriptCommand implements CommandExecutor {
 				ScriptLoader.loadScripts(scriptFile, logHandler)
 					.thenAccept(scriptInfo ->
 						// Code should run on server thread
-						Bukkit.getScheduler().scheduleSyncDelayedTask(Skript.getInstance(), () -> {
+						UniversalScheduler.getScheduler(Skript.getInstance()).runTaskLater(() -> {
 							Bukkit.getPluginManager().callEvent(new SkriptTestEvent()); // Run it
 							ScriptLoader.unloadScripts(ScriptLoader.getLoadedScripts());
 
@@ -442,7 +443,7 @@ public class SkriptCommand implements CommandExecutor {
 							for (String line : lines) {
 								Skript.info(sender, line);
 							}
-						})
+						}, 0)
 					);
 			}
 

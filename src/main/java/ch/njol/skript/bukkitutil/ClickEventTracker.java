@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import com.github.Anon8281.universalScheduler.UniversalScheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -72,8 +73,7 @@ public class ClickEventTracker {
 	public ClickEventTracker(JavaPlugin plugin) {
 		this.firstEvents = new HashMap<>();
 		this.modifiedEvents = new HashSet<>();
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin,
-				() -> {
+		UniversalScheduler.getScheduler(plugin).runTaskTimer(() -> {
 					firstEvents.clear();
 					modifiedEvents.clear();
 				}, 1, 1);

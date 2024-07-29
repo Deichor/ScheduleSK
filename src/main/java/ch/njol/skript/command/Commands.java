@@ -30,6 +30,7 @@ import ch.njol.skript.log.RetainingLogHandler;
 import ch.njol.skript.log.SkriptLogger;
 import ch.njol.skript.util.SkriptColor;
 import ch.njol.skript.variables.Variables;
+import com.github.Anon8281.universalScheduler.UniversalScheduler;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -306,7 +307,7 @@ public abstract class Commands {
 						if (handleEffectCommand(event.getPlayer(), event.getMessage()))
 							event.setCancelled(true);
 					} else {
-						Future<Boolean> f = Bukkit.getScheduler().callSyncMethod(Skript.getInstance(), () -> handleEffectCommand(event.getPlayer(), event.getMessage()));
+						Future<Boolean> f = UniversalScheduler.getScheduler(Skript.getInstance()).callSyncMethod(() -> handleEffectCommand(event.getPlayer(), event.getMessage()));
 						try {
 							while (true) {
 								try {

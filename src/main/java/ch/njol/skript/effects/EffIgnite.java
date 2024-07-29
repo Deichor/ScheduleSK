@@ -18,6 +18,8 @@
  */
 package ch.njol.skript.effects;
 
+import com.github.Anon8281.universalScheduler.UniversalRunnable;
+import com.github.Anon8281.universalScheduler.UniversalScheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Event;
@@ -82,12 +84,12 @@ public class EffIgnite extends Effect {
 		}
 		for (Entity entity : entities.getArray(event)) {
 			if (event instanceof EntityDamageEvent && ((EntityDamageEvent) event).getEntity() == entity && !Delay.isDelayed(event)) {
-				Bukkit.getScheduler().scheduleSyncDelayedTask(Skript.getInstance(), new Runnable() {
+				UniversalScheduler.getScheduler(Skript.getInstance()).runTaskLater(new UniversalRunnable() {
 					@Override
 					public void run() {
 						entity.setFireTicks(duration);
 					}
-				});
+				}, 0);
 			} else {
 				if (event instanceof EntityCombustEvent && ((EntityCombustEvent) event).getEntity() == entity && !Delay.isDelayed(event))
 					((EntityCombustEvent) event).setCancelled(true);// can't change the duration, thus simply cancel the event (and create a new one)

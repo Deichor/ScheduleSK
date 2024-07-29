@@ -85,6 +85,7 @@ import ch.njol.util.NullableChecker;
 import ch.njol.util.StringUtils;
 import ch.njol.util.coll.iterator.CheckedIterator;
 import ch.njol.util.coll.iterator.EnumerationIterable;
+import com.github.Anon8281.universalScheduler.UniversalScheduler;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import org.bstats.bukkit.Metrics;
@@ -568,7 +569,8 @@ public final class Skript extends JavaPlugin implements Listener {
 			info(" " + Language.get("skript.copyright"));
 
 		final long tick = testing() ? Bukkit.getWorlds().get(0).getFullTime() : 0;
-		Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+
+		UniversalScheduler.getScheduler(this).runTaskLater(new Runnable() {
 			@SuppressWarnings("synthetic-access")
 			@Override
 			public void run() {
@@ -668,9 +670,9 @@ public final class Skript extends JavaPlugin implements Listener {
 				debug("Early init done");
 
 				if (TestMode.ENABLED) {
-					Bukkit.getScheduler().runTaskLater(Skript.this, () -> info("Skript testing environment enabled, starting soon..."), 1);
+					UniversalScheduler.getScheduler(Skript.this).runTaskLater(() -> info("Skript testing environment enabled, starting soon..."), 1);
 					// Ignore late init (scripts, etc.) in test mode
-					Bukkit.getScheduler().runTaskLater(Skript.this, () -> {
+					UniversalScheduler.getScheduler(Skript.this).runTaskLater(() -> {
 						// Delay is in Minecraft ticks.
 						long shutdownDelay = 0;
 						if (TestMode.GEN_DOCS) {
@@ -773,7 +775,7 @@ public final class Skript extends JavaPlugin implements Listener {
 						double display = shutdownDelay / 20;
 						info("Testing done, shutting down the server in " + display + " second" + (display <= 1D ? "" : "s") + "...");
 						// Delay server shutdown to stop the server from crashing because the current tick takes a long time due to all the tests
-						Bukkit.getScheduler().runTaskLater(Skript.this, () -> {
+						UniversalScheduler.getScheduler(Skript.this).runTaskLater(() -> {
 							if (TestMode.JUNIT && !EffObjectives.isJUnitComplete())
 								EffObjectives.fail();
 
@@ -879,13 +881,11 @@ public final class Skript extends JavaPlugin implements Listener {
 										|| !record.getMessage().toLowerCase(Locale.ENGLISH).startsWith("can't keep up!");
 								};
 								BukkitLoggerFilter.addFilter(filter);
-								Bukkit.getScheduler().scheduleSyncDelayedTask(
-									Skript.this,
+								UniversalScheduler.getScheduler(Skript.this).runTaskLater(
 									() -> BukkitLoggerFilter.removeFilter(filter),
 									1);
 							} else {
-								Bukkit.getScheduler().scheduleSyncDelayedTask(Skript.this,
-									EvtSkript::onSkriptStart);
+								UniversalScheduler.getScheduler(Skript.this).runTaskLater(EvtSkript::onSkriptStart, 0);
 							}
 						} catch (Exception e) {
 							// Something went wrong, we need to make sure the exception is printed
@@ -894,7 +894,7 @@ public final class Skript extends JavaPlugin implements Listener {
 					});
 
 			}
-		});
+		}, 0);
 
 		Bukkit.getPluginManager().registerEvents(new Listener() {
 			@EventHandler
@@ -1222,7 +1222,7 @@ public final class Skript extends JavaPlugin implements Listener {
 			beforeDisable();
 		}
 
-		Bukkit.getScheduler().cancelTasks(this);
+		UniversalScheduler.getScheduler(this).cancelTasks();
 
 		for (Closeable c : closeOnDisable) {
 			try {

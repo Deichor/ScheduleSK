@@ -23,6 +23,8 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import com.github.Anon8281.universalScheduler.UniversalScheduler;
+import com.github.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.eclipse.jdt.annotation.Nullable;
@@ -38,8 +40,9 @@ public abstract class Task implements Runnable, Closeable {
 	private final Plugin plugin;
 	private final boolean async;
 	private long period = -1;
-	
-	private int taskID = -1;
+
+	@Nullable
+	private MyScheduledTask task = null;
 	
 	public Task(final Plugin plugin, final long delay, final long period) {
 		this(plugin, delay, period, false);
@@ -74,36 +77,36 @@ public abstract class Task implements Runnable, Closeable {
 		
 		if (period == -1) {
 			if (async) {
-				taskID = Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, this, delay).getTaskId();
+				task = UniversalScheduler.getScheduler(plugin).runTaskLater(this, delay);
 			} else {
-				taskID = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, this, delay);
+				task = UniversalScheduler.getScheduler(plugin).runTaskLater(this, delay);
 			}
 		} else {
 			if (async) {
-				taskID = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, this, delay, period).getTaskId();
+				task = UniversalScheduler.getScheduler(plugin).runTaskTimerAsynchronously(this, delay, period);
 			} else {
-				taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this, delay, period);
+				task = UniversalScheduler.getScheduler(plugin).runTaskTimer(this, delay, period);
 			}
 		}
-		assert taskID != -1;
+		assert task != null;
 	}
 	
 	/**
 	 * @return Whether this task is still running, i.e. whether it will run later or is currently running.
 	 */
 	public final boolean isAlive() {
-		if (taskID == -1)
+		if (task == null)
 			return false;
-		return Bukkit.getScheduler().isQueued(taskID) || Bukkit.getScheduler().isCurrentlyRunning(taskID);
+		return task.isRepeatingTask() || task.isCurrentlyRunning();
 	}
 	
 	/**
 	 * Cancels this task.
 	 */
 	public final void cancel() {
-		if (taskID != -1) {
-			Bukkit.getScheduler().cancelTask(taskID);
-			taskID = -1;
+		if (task != null) {
+			task.cancel();
+			task = null;
 		}
 	}
 	
@@ -166,7 +169,7 @@ public abstract class Task implements Runnable, Closeable {
 				Skript.exception(e);
 			}
 		}
-		final Future<T> f = Bukkit.getScheduler().callSyncMethod(p, c);
+		final Future<T> f = UniversalScheduler.getScheduler(p).callSyncMethod(c);
 		try {
 			while (true) {
 				try {
@@ -175,7 +178,8 @@ public abstract class Task implements Runnable, Closeable {
 			}
 		} catch (final ExecutionException e) {
 			Skript.exception(e);
-		} catch (final CancellationException e) {} catch (final ThreadDeath e) {}// server shutting down
+		} catch (final CancellationException ignored) {
+		}
 		return null;
 	}
 	

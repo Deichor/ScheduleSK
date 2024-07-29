@@ -24,6 +24,7 @@ import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.Trigger;
+import com.github.Anon8281.universalScheduler.UniversalScheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.eclipse.jdt.annotation.Nullable;
@@ -88,7 +89,7 @@ public class EvtScript extends SkriptEvent {
 			trigger.execute(event);
 		} else {
 			if (Skript.getInstance().isEnabled())
-				Bukkit.getScheduler().scheduleSyncDelayedTask(Skript.getInstance(), () -> trigger.execute(event));
+				UniversalScheduler.getScheduler(Skript.getInstance()).runTaskLater(() -> trigger.execute(event), 0);
 		}
 	}
 	

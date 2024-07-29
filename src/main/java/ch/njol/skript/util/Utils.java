@@ -36,6 +36,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import com.github.Anon8281.universalScheduler.UniversalScheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -517,7 +518,7 @@ public abstract class Utils {
 		completableFuture.whenComplete((r, ex) -> messenger.unregisterIncomingPluginChannel(skript, channel, listener));
 
 		// if we haven't gotten a response after a minute, let's just assume there wil never be one
-		Bukkit.getScheduler().scheduleSyncDelayedTask(skript, () -> {
+		UniversalScheduler.getScheduler(skript).runTaskLater(() -> {
 
 			if (!completableFuture.isDone())
 				completableFuture.cancel(true);

@@ -33,6 +33,7 @@ import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.slot.InventorySlot;
 import ch.njol.skript.util.slot.Slot;
 import ch.njol.util.Kleenean;
+import com.github.Anon8281.universalScheduler.UniversalScheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -247,7 +248,7 @@ public class ExprFurnaceSlot extends SimpleExpression<Slot> {
 				((FurnaceSmeltEvent) event).setResult(item != null ? item : new ItemStack(Material.AIR));
 			} else {
 				if (getTime() == EventValues.TIME_FUTURE) { // Since this is a future expression, run it AFTER the event
-					Bukkit.getScheduler().scheduleSyncDelayedTask(Skript.getInstance(), () -> FurnaceEventSlot.super.setItem(item));
+					UniversalScheduler.getScheduler(Skript.getInstance()).runTaskLater(() -> FurnaceEventSlot.super.setItem(item), 0);
 				} else {
 					super.setItem(item);
 				}

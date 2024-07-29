@@ -21,6 +21,8 @@ package ch.njol.skript.util;
 import ch.njol.skript.Skript;
 import ch.njol.skript.bukkitutil.block.BlockCompat;
 import com.destroystokyo.paper.block.BlockSoundGroup;
+import com.github.Anon8281.universalScheduler.UniversalRunnable;
+import com.github.Anon8281.universalScheduler.UniversalScheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.FluidCollisionMode;
@@ -173,12 +175,14 @@ public class DelayedChangeBlock implements Block {
 		if (newState != null) {
 			newState.setType(type);
 		} else {
-			Bukkit.getScheduler().scheduleSyncDelayedTask(Skript.getInstance(), new Runnable() {
+
+			UniversalRunnable runnable = new UniversalRunnable(){
 				@Override
 				public void run() {
 					block.setType(type);
 				}
-			});
+			};
+			UniversalScheduler.getScheduler(Skript.getInstance()).runTaskLater(runnable, 0);
 		}
 	}
 
@@ -302,12 +306,12 @@ public class DelayedChangeBlock implements Block {
 		if (newState != null) {
 			return false;
 		} else {
-			Bukkit.getScheduler().scheduleSyncDelayedTask(Skript.getInstance(), new Runnable() {
+			UniversalScheduler.getScheduler(Skript.getInstance()).runTaskLater(new UniversalRunnable() {
 				@Override
 				public void run() {
 					block.breakNaturally();
 				}
-			});
+			}, 0);
 			return true;
 		}
 	}
@@ -317,12 +321,12 @@ public class DelayedChangeBlock implements Block {
 		if (newState != null) {
 			return false;
 		} else {
-			Bukkit.getScheduler().scheduleSyncDelayedTask(Skript.getInstance(), new Runnable() {
+			UniversalScheduler.getScheduler(Skript.getInstance()).runTaskLater(new UniversalRunnable() {
 				@Override
 				public void run() {
 					block.breakNaturally(tool);
 				}
-			});
+			}, 0);
 			return true;
 		}
 	}
@@ -332,12 +336,12 @@ public class DelayedChangeBlock implements Block {
 		if (newState != null) {
 			return false;
 		} else {
-			Bukkit.getScheduler().scheduleSyncDelayedTask(Skript.getInstance(), new Runnable() {
+			UniversalScheduler.getScheduler(Skript.getInstance()).runTaskLater(block.getLocation(), new UniversalRunnable() {
 				@Override
 				public void run() {
 					block.breakNaturally(triggerEffect);
 				}
-			});
+			}, 0);
 			return true;
 		}
 	}
@@ -347,12 +351,12 @@ public class DelayedChangeBlock implements Block {
 		if (newState != null) {
 			return false;
 		} else {
-			Bukkit.getScheduler().scheduleSyncDelayedTask(Skript.getInstance(), new Runnable() {
+			UniversalScheduler.getScheduler(Skript.getInstance()).runTaskLater(block.getLocation(), new UniversalRunnable() {
 				@Override
 				public void run() {
 					block.breakNaturally(tool, triggerEffect);
 				}
-			});
+			},0);
 			return true;
 		}
 	}
@@ -411,12 +415,12 @@ public class DelayedChangeBlock implements Block {
 		if (newState != null) {
 			newState.setType(type);
 		} else {
-			Bukkit.getScheduler().scheduleSyncDelayedTask(Skript.getInstance(), new Runnable() {
+			UniversalScheduler.getScheduler(Skript.getInstance()).runTaskLater(block.getLocation(), new UniversalRunnable() {
 				@Override
 				public void run() {
 					block.setType(type, applyPhysics);
 				}
-			});
+			}, 0);
 		}
 	}
 
@@ -435,7 +439,7 @@ public class DelayedChangeBlock implements Block {
 		if (newState != null) {
 			newState.setBlockData(data);
 		} else {
-			Bukkit.getScheduler().scheduleSyncDelayedTask(Skript.getInstance(), () -> block.setBlockData(data, applyPhysics));
+			UniversalScheduler.getScheduler(Skript.getInstance()).runTaskLater(block.getLocation(), () -> block.setBlockData(data, applyPhysics), 0);
 		}
 	}
 

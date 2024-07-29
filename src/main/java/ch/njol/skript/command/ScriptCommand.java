@@ -44,6 +44,7 @@ import ch.njol.skript.util.chat.MessageComponent;
 import ch.njol.skript.variables.Variables;
 import ch.njol.util.StringUtils;
 import ch.njol.util.Validate;
+import com.github.Anon8281.universalScheduler.UniversalScheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -315,7 +316,7 @@ public class ScriptCommand implements TabExecutor {
 			runnable.run();
 		} else {
 			// must not wait for the command to complete as some plugins call commands in such a way that the server will deadlock
-			Bukkit.getScheduler().scheduleSyncDelayedTask(Skript.getInstance(), runnable);
+			UniversalScheduler.getScheduler(Skript.getInstance()).runTaskLater(runnable, 0);
 		}
 
 		return true; // Skript prints its own error message anyway

@@ -18,6 +18,7 @@
  */
 package ch.njol.skript.util;
 
+import com.github.Anon8281.universalScheduler.UniversalScheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.eclipse.jdt.annotation.Nullable;
@@ -36,7 +37,7 @@ import ch.njol.skript.variables.Variables;
  * <p>
  * Majority of Skript and Minecraft APIs are not thread-safe, so be careful.
  *
- * Make sure to add set {@link ch.njol.skript.ScriptLoader#hasDelayBefore} to
+ * Make sure to add set {} to
  * {@link ch.njol.util.Kleenean#TRUE} in the {@code init} method.
  */
 public abstract class AsyncEffect extends Effect {
@@ -52,7 +53,7 @@ public abstract class AsyncEffect extends Effect {
 		if (!Skript.getInstance().isEnabled()) // See https://github.com/SkriptLang/Skript/issues/3702
 			return null;
 
-		Bukkit.getScheduler().runTaskAsynchronously(Skript.getInstance(), () -> {
+		UniversalScheduler.getScheduler(Skript.getInstance()).runTaskAsynchronously(() -> {
 			// Re-set local variables
 			if (localVars != null)
 				Variables.setLocalVariables(e, localVars);
@@ -60,7 +61,7 @@ public abstract class AsyncEffect extends Effect {
 			execute(e); // Execute this effect
 			
 			if (getNext() != null) {
-				Bukkit.getScheduler().runTask(Skript.getInstance(), () -> { // Walk to next item synchronously
+				UniversalScheduler.getScheduler(Skript.getInstance()).runTask(() -> { // Walk to next item synchronously
 					Object timing = null;
 					if (SkriptTimings.enabled()) { // getTrigger call is not free, do it only if we must
 						Trigger trigger = getTrigger();

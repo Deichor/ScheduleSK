@@ -27,6 +27,8 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.registrations.Classes;
 import ch.njol.skript.util.Time;
 import ch.njol.util.Math2;
+import com.github.Anon8281.universalScheduler.UniversalScheduler;
+import com.github.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.event.Event;
@@ -101,9 +103,9 @@ public class EvtAtTime extends SkriptEvent implements Comparable<EvtAtTime> {
 				iterator.remove();
 		}
 
-		if (taskID != -1 && TRIGGERS.isEmpty()) { // Unregister Bukkit listener if possible
-			Bukkit.getScheduler().cancelTask(taskID);
-			taskID = -1;
+		if (task != null && TRIGGERS.isEmpty()) { // Unregister Bukkit listener if possible
+			task.cancel();
+			task = null;
 		}
 	}
 
@@ -117,14 +119,15 @@ public class EvtAtTime extends SkriptEvent implements Comparable<EvtAtTime> {
 		return false;
 	}
 
-	private static int taskID = -1;
+	@Nullable
+	private static MyScheduledTask task = null;
 	
 	private static void registerListener() {
-		if (taskID != -1)
+		if (task != null)
 			return;
 		// For each world:
 		// check each instance in order until triggerTime > (worldTime + period)
-		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Skript.getInstance(), () -> {
+		task = UniversalScheduler.getScheduler(Skript.getInstance()).runTaskTimer(() -> {
 			for (Entry<World, EvtAtInfo> entry : TRIGGERS.entrySet()) {
 				EvtAtInfo info = entry.getValue();
 				int worldTime = (int) entry.getKey().getTime();
