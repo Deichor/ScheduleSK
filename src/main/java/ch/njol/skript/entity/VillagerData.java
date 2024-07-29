@@ -22,7 +22,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.bukkit.Registry;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.Villager.Profession;
 import org.eclipse.jdt.annotation.Nullable;
@@ -42,7 +44,7 @@ public class VillagerData extends EntityData<Villager> {
 	 * Professions can be for zombies also. These are the ones which are only
 	 * for villagers.
 	 */
-	private static List<Profession> professions;
+	private static final List<Profession> professions;
 
 	static {
 		// professions in order!
@@ -56,7 +58,7 @@ public class VillagerData extends EntityData<Villager> {
 					"cleric", "farmer", "fisherman", "fletcher",
 					"leatherworker", "librarian", "mason", "nitwit",
 					"shepherd", "toolsmith", "weaponsmith");
-			professions = Arrays.asList(Profession.values());
+			professions = Registry.VILLAGER_PROFESSION.stream().toList();
 		} else { // Post 1.10: Not all professions go for villagers
 			EntityData.register(VillagerData.class, "villager", Villager.class, 0,
 					"normal", "villager", "farmer", "librarian",
