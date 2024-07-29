@@ -18,11 +18,11 @@
  */
 package ch.njol.skript.effects;
 
+import com.github.Anon8281.universalScheduler.UniversalRunnable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.eclipse.jdt.annotation.Nullable;
 
 import ch.njol.skript.Skript;
@@ -69,14 +69,12 @@ public class EffRespawn extends Effect {
 	@Override
 	protected void execute(final Event e) {
 		for (final Player p : players.getArray(e)) {
-			if (forceDelay) { // Use Bukkit runnable
-				new BukkitRunnable() {
-
+			if (forceDelay) {
+				new UniversalRunnable(){
 					@Override
 					public void run() {
 						p.spigot().respawn();
 					}
-
 				}.runTaskLater(Skript.getInstance(), 1);
 			} else { // Just respawn
 				p.spigot().respawn();

@@ -182,7 +182,7 @@ public class DelayedChangeBlock implements Block {
 					block.setType(type);
 				}
 			};
-			UniversalScheduler.getScheduler(Skript.getInstance()).runTaskLater(runnable, 0);
+			UniversalScheduler.getScheduler(Skript.getInstance()).runTaskLater(block.getLocation(), runnable, 0);
 		}
 	}
 
@@ -306,7 +306,7 @@ public class DelayedChangeBlock implements Block {
 		if (newState != null) {
 			return false;
 		} else {
-			UniversalScheduler.getScheduler(Skript.getInstance()).runTaskLater(new UniversalRunnable() {
+			UniversalScheduler.getScheduler(Skript.getInstance()).runTaskLater(block.getLocation(), new UniversalRunnable() {
 				@Override
 				public void run() {
 					block.breakNaturally();
@@ -321,7 +321,7 @@ public class DelayedChangeBlock implements Block {
 		if (newState != null) {
 			return false;
 		} else {
-			UniversalScheduler.getScheduler(Skript.getInstance()).runTaskLater(new UniversalRunnable() {
+			UniversalScheduler.getScheduler(Skript.getInstance()).runTaskLater(block.getLocation(), new UniversalRunnable() {
 				@Override
 				public void run() {
 					block.breakNaturally(tool);
